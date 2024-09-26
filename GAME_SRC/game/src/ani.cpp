@@ -1,7 +1,8 @@
 /*********************************************************************
  * date        : 2007.11.16
  * file        : ani.cpp
- * author      : mhh
+ * author      : mhhkkksss
+ * author      : mhhkkksss
  * description :
  */
 
