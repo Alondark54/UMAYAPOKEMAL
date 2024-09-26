@@ -1,0 +1,12 @@
+<ScriptFile>
+	<CreateEterPackXml Input="root:" ArchivePath="../pack/root.lica" XmlPath="bin/_create.xml">
+		<Ignore Pattern="[a-zA-z0-9]+.db" />
+		<Ignore Pattern="[a-zA-z0-9]+.png" />
+		<Ignore Pattern="[a-zA-z0-9]+.psd" />
+		<Ignore Pattern="[a-zA-z0-9]+.pyexec" />
+		<Ignore Pattern="[a-zA-z0-9]+.rar" />
+		<Ignore Pattern="[a-zA-z0-9]+.zip" />
+		<Ignore Pattern="item_names.txt" />
+		<Ignore Pattern="mob_names.txt" />
+	</CreateEterPackXml>
+</ScriptFile>
