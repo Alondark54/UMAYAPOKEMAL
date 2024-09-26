@@ -1,0 +1,248 @@
+import app
+import ui
+import uiTooltip
+import item
+import player
+import grp
+import time
+import event
+import net
+import chat
+
+class FateRoulette(ui.BoardWithTitleBar):
+	
+	def __init__(self):
+		ui.BoardWithTitleBar.__init__(self)
+		self.__BuildWindow()
+		
+	def __del__(self):
+		ui.BoardWithTitleBar.__del__(self)
+	
+	def __BuildWindow(self):
+		
+		self.xOpen = 0
+		self.yOpen = 0
+		
+		self.speedDown = 5
+		self.timeDiff = 0.1
+		
+		self.tooltipItem = None
+		
+		self.animate = False
+		self.blink = False
+		
+		self.blinkTimes = 6
+		self.blinkLast = 0
+		
+		self.position = 1
+		self.toPosition = 16
+		self.lastClock = 0
+		
+		self.SetSize(654, 364+52)
+		self.AddFlag("float")
+		self.AddFlag("movable")
+		self.SetTitleName("Kader Çarký")
+		self.SetCloseEvent(ui.__mem_func__(self.OnClose))
+		
+		image = ui.ImageBox()
+		image.SetParent(self)
+		image.LoadImage("fateroulette/background.tga")
+		image.SetPosition(6, 29)
+		image.Show()
+		self.background = image
+		
+		select = ui.ImageBox()
+		select.SetParent(self.background)
+		select.SetPosition(156, 0)
+		select.LoadImage("fateroulette/1.tga")
+		select.Hide()
+		self.select = select
+		
+		button = ui.Button()
+		button.SetParent(self.background)
+		button.SetPosition(280, 124)
+		button.SetUpVisual("fateroulette/button.tga")
+		button.SetOverVisual("fateroulette/button_hover.tga")
+		button.SetDownVisual("fateroulette/button_down.tga")
+		button.SetEvent(ui.__mem_func__(self.OnButtonClick))
+		button.Show()
+		self.run = button
+		
+		self.altgui = ui.ImageBox()
+		self.altgui.SetParent(self.background)
+		self.altgui.LoadImage("fateroulette/tombalagui.png")
+		self.altgui.SetPosition(1, 329)
+		self.altgui.Show()
+		
+		self.slotver = ui.GridSlotWindow()
+		self.slotver.SetParent(self.altgui)
+		self.slotver.SetPosition(9,8)
+		self.slotver.ArrangeSlot(50, 1, 1, 32, 32, 0, 0)
+		self.slotver.SetItemSlot(50, 30135, 0)
+		self.slotver.RefreshSlot()
+		self.slotver.Show()
+		
+		self.yazi1 = ui.TextLine()
+		self.yazi1.SetParent(self.altgui)
+		self.yazi1.SetPosition(60,6)
+		self.yazi1.SetText("Kullaným Hakký : " + str(player.GetItemCountByVnum(30135)))
+		self.yazi1.Show()
+		
+		self.yazi2 = ui.TextLine()
+		self.yazi2.SetParent(self.altgui)
+		self.yazi2.SetPosition(60,30)
+		self.yazi2.SetText("Cark Cevirme Ucreti : 25.000.000 Yang ")
+		self.yazi2.Show()
+		
+		
+		
+		
+		self.slots = [
+			self.__CreateSlot(1, 156+161 - 5, 53 - 4),
+			self.__CreateSlot(2, 156+207 - 5, 63 - 4),
+			self.__CreateSlot(3, 156+248 - 5, 93 - 4),
+			self.__CreateSlot(4, 156+277 - 5, 135 - 4),
+			self.__CreateSlot(5, 156+290 - 5, 182 - 4),
+			self.__CreateSlot(6, 156+277 - 5, 228 - 4),
+			self.__CreateSlot(7, 156+248 - 5, 271 - 4),
+			self.__CreateSlot(8, 156+207 - 5, 298 - 4),
+			self.__CreateSlot(9, 156+160 - 5, 307 - 4),
+			self.__CreateSlot(10, 156+114 - 5, 296 - 4),
+			self.__CreateSlot(11, 156+72 - 5, 269 - 4),
+			self.__CreateSlot(12, 156+44 - 5, 229 - 4),
+			self.__CreateSlot(13, 156+30 - 5, 183 - 4),
+			self.__CreateSlot(14, 156+41 - 5, 133 - 4),
+			self.__CreateSlot(15, 156+70 - 5, 92 - 4),
+			self.__CreateSlot(16, 156+112 - 5, 63 - 4)
+		]
+		
+		self.items = {}
+		
+	def __CreateSlot(self, number, x, y):
+		grid = ui.GridSlotWindow()
+		grid.SetParent(self)
+		grid.SetPosition(x, y)
+		grid.ArrangeSlot(number, 1, 1, 32, 32, 0, 0)
+		grid.SetOverInItemEvent(ui.__mem_func__(self.OverInItem))
+		grid.SetOverOutItemEvent(ui.__mem_func__(self.OverOutItem))
+		grid.RefreshSlot()
+		grid.Show()
+		
+		return grid
+	
+	def OverInItem(self, slotIndex):
+		if slotIndex < 1 or slotIndex > 16:
+			return
+		
+		self.tooltipItem = uiTooltip.ItemToolTip()
+		metinSlot = []
+		for i in xrange(player.METIN_SOCKET_MAX_NUM):
+			metinSlot.append(0)
+		self.tooltipItem.AddItemData(self.items[slotIndex - 1], metinSlot, 0)
+		self.tooltipItem.Show()
+
+	def OverOutItem(self):
+		if self.tooltipItem:
+			self.tooltipItem.HideToolTip()
+
+			
+	def OnButtonClick(self):
+		self.run.Disable()
+		self.run.Down()
+		net.SendChatPacket("/fateroulette 1")
+
+	def Reset(self):
+		self.animate = False
+		self.blink = True
+					
+		self.run.Enable()
+		self.run.SetUp()
+
+	
+	def Prepare(self, items):
+		items = items.split("|")
+		j = 0
+		for i in range(0,32,2):
+			self.slots[j].SetItemSlot(j + 1, int(items[i]), int(items[i + 1]))
+			self.items[j] = int(items[i])
+			j += 1
+		
+	def Run(self, data):
+		data = data.split("|")
+		
+		self.toPosition = int(data[0])
+		self.speedDown = int(data[1])
+		
+		self.blinkTimes = 6
+		self.blinkLast = 0
+		
+		self.position = 1
+		self.animate = True
+		self.blink = False
+		self.timeDiff = 0.1
+		
+		self.lastClock = app.GetTime()
+		
+	def OnUpdate(self):
+		self.yazi1.SetText("Kullaným Hakký : " + str(player.GetItemCountByVnum(30135)))
+		if self.animate == True:
+			if (app.GetTime() - self.lastClock) >= self.timeDiff:
+				self.lastClock = app.GetTime()
+				
+				self.toPosition -= 1
+				
+				if self.toPosition <= self.speedDown:
+					self.timeDiff += 0.1
+				
+				self.position += 1
+				if self.position == 17:
+					self.position = 1
+				
+				if not self.select.IsShow():
+					self.select.Show()
+				
+				self.select.LoadImage("fateroulette/" + str(self.position) + ".tga")
+				
+				if self.toPosition == 0:
+					self.animate = False
+					self.blink = True
+					
+					self.run.Enable()
+					self.run.SetUp()
+					net.SendChatPacket("/fateroulette 2")
+					
+		if self.blink == True and (app.GetTime() - self.blinkLast) >= 0.3:
+			if self.blinkTimes > 0:
+				if self.blinkTimes % 2:
+					self.select.Hide()
+				else:
+					self.select.Show()
+				self.blinkTimes -= 1
+			else:	
+				self.blink = False
+				self.blinkTimes = 6
+				self.blinkLast = 0
+				self.select.Hide()
+				self.select.LoadImage("fateroulette/1.tga")
+				
+			self.blinkLast = app.GetTime()
+
+			
+	def Open(self):
+		if not self.IsShow():
+			self.Show()
+			self.SetCenterPosition()
+		else:
+			self.Close()
+			
+	def Close(self):
+		if self.IsShow():
+			self.Hide()
+			
+	def OnClose(self):
+		self.Close()
+		
+	def OnPressEscapeKey(self):
+		self.Close()
+		return True
+		

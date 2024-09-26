@@ -1,0 +1,262 @@
+import ui, app, uiToolTip, net, item, localeInfo, chat
+
+BONUSES_LIST = {
+	8 : "Maks. HP +1000|Defans +120|Saldiri Degeri +50|",
+	9 : "Maks. HP +1100|Defans +140|Saldiri Degeri +60|",
+}
+class BiyologBonusSelectDialog(ui.ScriptWindow):
+	def __init__(self):
+		ui.ScriptWindow.__init__(self)
+		self.Buttons = {}
+		self.selectButton = -1
+		self.acceptButton = None
+
+
+	def __del__(self):
+		ui.ScriptWindow.__del__(self)
+
+	def Destroy(self):
+		self.ClearDictionary()
+		self.Buttons = {}
+		self.selectButton = -1
+		self.acceptButton = None
+
+
+	def LoadWindow(self):
+		try:
+			ui.PythonScriptLoader().LoadScriptFile(self, "uiscript/biyolog_bonusselect_dialog.py")
+		except:
+			import exception
+			exception.Abort("BiyologWindow.LoadWindow.LoadObject")
+		try:
+			self.GetChild("TitleBar").SetCloseEvent(self.Close)
+			self.acceptButton = self.GetChild("AcceptButton")
+
+		except:
+			import exception
+			exception.Abort("BiyologWindow.LoadWindow.BindObject")
+
+		self.acceptButton.SetEvent(ui.__mem_func__(self.Accept))
+
+
+	def MakeButton(self, mission):
+		if not mission:
+			return
+
+		for i in xrange(3):
+			if self.Buttons.has_key(i):
+				del self.Buttons[i]
+				self.Buttons[i] = None
+
+			button = ui.MakeButton(self, 20, 46+28*i , "", "d:/ymir work/ui/game/myshop_deco/", "select_btn_01.sub", "select_btn_02.sub", "select_btn_03.sub")
+			button.SetText(BONUSES_LIST[int(mission)].split("|")[i])
+			button.SetEvent(ui.__mem_func__(self.__SelectBonus), i)
+			button.Show()
+			self.Buttons[i] = button
+			
+		self.selectButton = -1
+
+	def __SelectBonus(self, index):
+		for key,item in self.Buttons.iteritems():
+			if key != index:
+				item.SetUp()
+				item.Enable()
+			else:
+				item.Down()
+				item.Disable()
+
+		self.selectButton = (index + 1)
+
+	def Accept(self):
+		if self.selectButton == -1:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, "Bonus seçimi yapmadin.")
+			return
+		
+		if self.selectButton > 0 and self.selectButton <= 3:
+			net.SendChatPacket("/slct_sppp %d" % (self.selectButton-1))
+
+		self.Close()
+
+	def Open(self):
+		self.SetTop()
+		self.SetCenterPosition()
+		ui.ScriptWindow.Show(self)
+
+	def Close(self):
+		self.Hide()
+		return TRUE
+
+	def OnPressEscapeKey(self):
+		self.Close()
+		return TRUE
+
+class NewBiologWindow(ui.ScriptWindow):
+	BIOLOG_ADDITIONAL_ITEMS = (71035, 70022)
+	def __init__(self):
+		ui.ScriptWindow.__init__(self)
+		self.LoadWindow()
+		self.Initialize()
+
+	def __del__(self):
+		ui.ScriptWindow.__del__(self)
+
+	def Destroy(self):
+		self.ClearDictionary()
+		self.Initialize()
+
+	def Initialize(self):
+		self.ToolTip = None
+		self.beraninKalbi = False # zaman
+		self.arstOzut = False # sans
+		self.remainingTime = 0
+		self.iconVnum = 0
+
+	def LoadWindow(self):
+		try:
+			pyScrLoader = ui.PythonScriptLoader()
+			pyScrLoader.LoadScriptFile(self, "UIScript/newbiolog.py")
+		except:
+			import exception
+			exception.Abort("NewBiologWindow.LoadWindow.__LoadScript")
+		try:
+			self.board = self.GetChild("board")
+			self.istveadet = self.GetChild("istveadet")
+			self.beraveozut = [self.GetChild("EkItem_%d"%(i)) for i in range(2)]
+			self.checkboxs = [self.GetChild("AdditionalCheckbox_%d"%(i)) for i in range(2)]
+			self.odulData = [self.GetChild("odulOzellik_%d"%(i)) for i in range(4)]
+			self.itemIcon = self.GetChild("itemIcon")
+			self.giveButton = self.GetChild("SubmitButton")
+			self.LeftTime = self.GetChild("BiologCooldownInfo")
+			self.reminder = self.GetChild("CheckBoxReminder")
+		except:
+			import exception
+			exception.Abort("NewBiologWindow.LoadWindow.__BindObject")
+
+		self.board.SetCloseEvent(ui.__mem_func__(self.Close))
+
+		for i in range(len(self.beraveozut)):
+			self.beraveozut[i].SetItemSlot(i, self.BIOLOG_ADDITIONAL_ITEMS[i], 0)
+			self.beraveozut[i].SetOverInItemEvent(ui.__mem_func__(self.OnOverInEkItem))
+			self.beraveozut[i].SetOverOutItemEvent(ui.__mem_func__(self.OnOverOutItem))
+
+		self.checkboxs[0].SetEvent(ui.__mem_func__(self.BeraVerimMiAbi), "ON_CHECK", True)
+		self.checkboxs[0].SetEvent(ui.__mem_func__(self.BeraVerimMiAbi), "ON_UNCKECK", False)
+
+		self.checkboxs[1].SetEvent(ui.__mem_func__(self.OzutVerimMiAbi), "ON_CHECK", True)
+		self.checkboxs[1].SetEvent(ui.__mem_func__(self.OzutVerimMiAbi), "ON_UNCKECK", False)
+
+		self.reminder.SetEvent(ui.__mem_func__(self.ChangeReminderStat), "ON_CHECK", True)
+		self.reminder.SetEvent(ui.__mem_func__(self.ChangeReminderStat), "ON_UNCKECK", False)
+
+		self.giveButton.SetEvent(ui.__mem_func__(self.GiveBiolog))
+
+
+		
+		self.itemIcon.SetOverInItemEvent(ui.__mem_func__(self.OnOverInItem))
+		self.itemIcon.SetOverOutItemEvent(ui.__mem_func__(self.OnOverOutItem))
+
+		bonusSelect = BiyologBonusSelectDialog()
+		bonusSelect.LoadWindow()
+		bonusSelect.Close()
+		self.bonusSelect = bonusSelect
+
+	def BeraVerimMiAbi(self, checkType, autoFlag):
+		if autoFlag:
+			self.beraninKalbi = True
+		else:
+			self.beraninKalbi = False
+
+	def OzutVerimMiAbi(self, checkType, autoFlag):
+		if autoFlag:
+			self.arstOzut = True
+		else:
+			self.arstOzut = False
+
+	def ChangeReminderStat(self, checkType, autoFlag):
+		if autoFlag:
+			net.SendChatPacket("/updt_remnder 1")
+		else:
+			net.SendChatPacket("/updt_remnder 0")
+
+	def GiveBiolog(self):
+		net.SendChatPacket("/give_biolog %d %d" % (self.arstOzut, self.beraninKalbi))
+
+	def UpdateInfo(self, needitem, soulvnum, givecount, state, reqcount, aff_type, aff_value, aff_type2, aff_value2, aff_type3, aff_value3, aff_type4, aff_value4, chance, time):
+
+		if state == 1:
+			item.SelectItem(soulvnum)
+			text = " {} ({}/{})".format(item.GetItemName(), 0, 1)
+		else:
+			item.SelectItem(needitem)
+			text = " {} ({}/{})".format(item.GetItemName(), givecount, reqcount)
+
+		affDatas = [ [aff_type, aff_value], [aff_type2, aff_value2], [aff_type3, aff_value3], [aff_type4, aff_value4] ]
+		self.istveadet.SetText(text)
+		
+		for i in range(4):
+			if affDatas[i][0] != 0 and affDatas[i][1] != 0:
+				tData = self.ToolTip.GetAffectString(affDatas[i][0], affDatas[i][1])
+				self.odulData[i].SetText(tData)
+			else:
+				self.odulData[i].Hide()
+		self.iconVnum = needitem
+		if state == 1: self.iconVnum = soulvnum
+		self.itemIcon.SetItemSlot(0, self.iconVnum, 0)
+		self.remainingTime = app.GetTime()+int(time)
+
+	def OpenSelectDialog(self, idx):
+		if not self.bonusSelect:
+			return
+
+		self.bonusSelect.MakeButton(idx)
+		self.bonusSelect.Open()
+
+	def UpdateReminder(self, flag):
+		if int(flag) == 1:
+			self.reminder.SetCheckStatus(True)
+		else:
+			self.reminder.SetCheckStatus(False)
+
+	def OnUpdate(self):
+		leftTime = max(0, self.remainingTime - app.GetTime())
+
+		if leftTime == 0:
+			self.LeftTime.SetText("Verilebilir!")
+			return
+
+		leftHour = int((leftTime / 60) / 60)
+		leftMin = int((leftTime / 60) % 60)
+		leftSecond = int(leftTime % 60)
+
+		self.LeftTime.SetText("Kalan sure: %02d:%02d:%02d"%(leftHour, leftMin, leftSecond))
+
+	def Open(self):
+		self.SetTop()
+		self.SetCenterPosition()
+		ui.ScriptWindow.Show(self)
+		net.SendChatPacket("/update_biolog")
+
+	def Close(self):
+		if self.ToolTip:
+			self.ToolTip.HideToolTip()
+		self.Hide()
+
+	def OnPressEscapeKey(self):
+		self.Close()
+
+	def SetItemToolTip(self, tooltip):
+		self.ToolTip = tooltip
+
+	def OnOverInItem(self, slotIndex):
+		if self.ToolTip:
+			self.ToolTip.ClearToolTip()
+			self.ToolTip.SetItemToolTip(self.iconVnum)
+
+	def OnOverInEkItem(self, slotIndex):
+		if self.ToolTip:
+			self.ToolTip.ClearToolTip()
+			self.ToolTip.SetItemToolTip(self.BIOLOG_ADDITIONAL_ITEMS[slotIndex])
+
+	def OnOverOutItem(self):
+		if self.ToolTip:
+			self.ToolTip.HideToolTip()
