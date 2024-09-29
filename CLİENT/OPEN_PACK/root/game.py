@@ -436,7 +436,7 @@ class GameWindow(ui.ScriptWindow):
 		#onPressKeyDict[app.DIK_F12]	= lambda : selfs.maintenanceadminopen()
 		# onPressKeyDict[app.DIK_F5]	= lambda : self.EventCalendar()
 		# onPressKeyDict[app.DIK_F6]	= lambda : selfs.wndInterface.OpenDeleteItem()
-		#onPressKeyDict[app.DIK_F7]	= lambda : self.BossTracking()
+		onPressKeyDict[app.DIK_F7]	= lambda : self.BossTracking()
 		# onPressKeyDict[app.DIK_F8]	= lambda : selfs.wndInterface.OpenBiologWindow()
 
 		onPressKeyDict[app.DIK_LALT]		= lambda : self.ShowName()
@@ -2303,7 +2303,10 @@ class GameWindow(ui.ScriptWindow):
 				"AppendMissions" : selfs.wndInterface.AppendMissions,
 				"OpenMissionPanel" : selfs.wndInterface.OpenMissionPanel,
 			})
-
+		if app.ENABLE_STREAMER_SYSTEM:
+			serverCommandList.update({
+				"sendstreamer"		: self.SendStreamerInfo,
+			})
 		serverCommandList.update({
 			"botcontrol" : self.UpdateBotControlItems,
 			"closebotcontrol" : self.CloseBotControl,
@@ -3042,3 +3045,7 @@ class GameWindow(ui.ScriptWindow):
 			selfs.wndInterface.LoadRankData(int(index), int(isFirst))
 		def LoadRankUpdate(self, index):
 			selfs.wndInterface.LoadRankUpdate(int(index))
+
+	if app.ENABLE_STREAMER_SYSTEM:
+		def SendStreamerInfo(self, arg1, arg2, arg3):
+			selfs.wndInterface.StreamerLinkShow(arg1,arg2,arg3)

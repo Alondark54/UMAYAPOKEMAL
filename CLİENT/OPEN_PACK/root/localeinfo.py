@@ -415,7 +415,12 @@ def GetAlignmentTitleName(alignment):
 		return TITLE_NAME_LIST[7]
 
 	return TITLE_NAME_LIST[8]
+if app.ENABLE_STREAMER_ICON:
+	STREAMER_NAME_LIST = (STREAMER_0,STREAMER_1,STREAMER_2,STREAMER_3,STREAMER_4)
 
+if app.ENABLE_STREAMER_ICON:
+	def GetStreamerName(streamer):
+		return STREAMER_NAME_LIST[streamer]
 
 OPTION_PVPMODE_MESSAGE_DICT = {
 	0 : PVP_MODE_NORMAL,

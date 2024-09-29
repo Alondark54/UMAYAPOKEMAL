@@ -519,8 +519,8 @@ class InventoryWindow(ui.ScriptWindow):
 			self.OffButton.SetEvent(ui.__mem_func__(self.ClickOffButton))
 
 		# MallButton
-		if self.ItemBiolog:
-			self.ItemBiolog.SetEvent(ui.__mem_func__(self.ClickItemBiolog))
+		# if self.ItemBiolog:
+			# self.ItemBiolog.SetEvent(ui.__mem_func__(self.ClickItemBiolog))
 
 		# MallButton
 		if self.ItemDelete:

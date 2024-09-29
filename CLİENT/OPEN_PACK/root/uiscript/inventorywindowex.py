@@ -120,19 +120,19 @@ if app.ENABLE_EXTEND_INVEN_SYSTEM and app.ENABLE_CHEQUE_SYSTEM:
 								"down_image" : "d:/ymir work/ui/offshop/shop_down.tga",
 							},
 							### OffButton
-							{
-								"name" : "ClickItemBiolog",
-								"type" : "button",
+							# {
+								# "name" : "ClickItemBiolog",
+								# "type" : "button",
                             
-								"x" : 76,
-								"y" : 110,
+								# "x" : 76,
+								# "y" : 110,
                             
-								"tooltip_text" : uiScriptLocale.BIYOG_TITLE,
+								# "tooltip_text" : uiScriptLocale.BIYOG_TITLE,
                             
-								"default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
-								"over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
-								"down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
-							},
+								# "default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
+								# "over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
+								# "down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
+							# },
 							## OffButton
 							{
 								"name" : "ClickItemDelete",
@@ -546,19 +546,19 @@ elif app.ENABLE_EXTEND_INVEN_SYSTEM and not app.ENABLE_CHEQUE_SYSTEM:
 								"down_image" : "d:/ymir work/ui/offshop/shop_down.tga",
 							},
 							### OffButton
-							{
-								"name" : "ClickItemBiolog",
-								"type" : "button",
+							# {
+								# "name" : "ClickItemBiolog",
+								# "type" : "button",
                             
-								"x" : 76,
-								"y" : 110,
+								# "x" : 76,
+								# "y" : 110,
                             
-								"tooltip_text" : uiScriptLocale.BIYOG_TITLE,
+								# "tooltip_text" : uiScriptLocale.BIYOG_TITLE,
                             
-								"default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
-								"over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
-								"down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
-							},
+								# "default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
+								# "over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
+								# "down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
+							# },
 							## OffButton
 							{
 								"name" : "ClickItemDelete",
@@ -947,19 +947,19 @@ elif not app.ENABLE_EXTEND_INVEN_SYSTEM and app.ENABLE_CHEQUE_SYSTEM:
 								"down_image" : "d:/ymir work/ui/offshop/shop_down.tga",
 							},
 							### OffButton
-							{
-								"name" : "ClickItemBiolog",
-								"type" : "button",
+							# {
+								# "name" : "ClickItemBiolog",
+								# "type" : "button",
                             
-								"x" : 76,
-								"y" : 110,
+								# "x" : 76,
+								# "y" : 110,
                             
-								"tooltip_text" : uiScriptLocale.BIYOG_TITLE,
+								# "tooltip_text" : uiScriptLocale.BIYOG_TITLE,
                             
-								"default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
-								"over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
-								"down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
-							},
+								# "default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
+								# "over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
+								# "down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
+							# },
 							## OffButton
 							{
 								"name" : "ClickItemDelete",
@@ -1302,19 +1302,19 @@ else:
 								"down_image" : "d:/ymir work/ui/offshop/shop_down.tga",
 							},
 							### OffButton
-							{
-								"name" : "ClickItemBiolog",
-								"type" : "button",
+							# {
+								# "name" : "ClickItemBiolog",
+								# "type" : "button",
                             
-								"x" : 76,
-								"y" : 110,
+								# "x" : 76,
+								# "y" : 110,
                             
-								"tooltip_text" : uiScriptLocale.BIYOG_TITLE,
+								# "tooltip_text" : uiScriptLocale.BIYOG_TITLE,
                             
-								"default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
-								"over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
-								"down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
-							},
+								# "default_image" : "d:/ymir work/ui/game/TaskBar/biyo1.tga",
+								# "over_image" : "d:/ymir work/ui/game/TaskBar/biyo2.tga",
+								# "down_image" : "d:/ymir work/ui/game/TaskBar/biyo3.tga",
+							# },
 							## OffButton
 							{
 								"name" : "ClickItemDelete",

@@ -751,7 +751,7 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndMoneySlot = self.GetChild("Money_Slot")
 			self.mallButton = self.GetChild2("MallButton")
 			self.OffButton = self.GetChild2("OffButton")
-			self.ItemBiolog = self.GetChild2("ClickItemBiolog")
+			# self.ItemBiolog = self.GetChild2("ClickItemBiolog")
 			self.ItemDelete = self.GetChild2("ClickItemDelete")
 			#self.DSSButton = self.GetChild2("DSSButton")# //SIMYA KAPAMA
 			self.costumeButton = self.GetChild2("CostumeButton")
@@ -852,8 +852,8 @@ class InventoryWindow(ui.ScriptWindow):
 			self.OffButton.SetEvent(ui.__mem_func__(self.ClickOffButton))
 
 		# MallButton
-		if self.ItemBiolog:
-			self.ItemBiolog.SetEvent(ui.__mem_func__(self.ClickItemBiolog))
+		# if self.ItemBiolog:
+			# self.ItemBiolog.SetEvent(ui.__mem_func__(self.ClickItemBiolog))
 
 		# MallButton
 		if self.ItemDelete:
@@ -1071,9 +1071,9 @@ class InventoryWindow(ui.ScriptWindow):
 		print "click_off_button"
 		net.SendChatPacket("/open_off")
 
-	def ClickItemBiolog(self):
-		print "click_item_biolog"
-		self.interface.OpenBiologWindow()
+	# def ClickItemBiolog(self):
+		# print "click_item_biolog"
+		# self.interface.OpenBiologWindow()
 
 	def ClickEfsunBot(self):
 		print "click_item_attr"

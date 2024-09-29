@@ -138,7 +138,8 @@ class LoadingWindow(ui.ScriptWindow):
 		self.__RegisterTitleName()
 		self.__RegisterColor()
 		self.__RegisterEmotionIcon()
-
+		if app.ENABLE_STREAMER_ICON:
+			self.__RegisterStreamerName()
 		self.loadStepList=[
 			(0, ui.__mem_func__(self.__InitData)),
 			(10, ui.__mem_func__(self.__LoadMap)),
@@ -217,6 +218,11 @@ class LoadingWindow(ui.ScriptWindow):
 			for idx, itm in enumerate(localeInfo.RANKING_TITLE_LIST, start = 1):
 				chrmgr.RegisterNewRankingTitleName(idx, itm)
 
+	if app.ENABLE_STREAMER_ICON:
+		def __RegisterStreamerName(self):
+			for i in xrange(len(localeInfo.STREAMER_NAME_LIST)):
+				chrmgr.RegisterStreamerName(i, localeInfo.STREAMER_NAME_LIST[i])
+
 
 	def __RegisterColor(self):
 
@@ -255,7 +261,16 @@ class LoadingWindow(ui.ScriptWindow):
 		for rgb in TITLE_COLOR_DICT:
 			chrmgr.RegisterTitleColor(count, rgb[0], rgb[1], rgb[2])
 			count += 1
-
+		if app.ENABLE_STREAMER_ICON:
+			STREAMER_COLOR_DICT = ( colorInfo.STREAMER_COLOR_0,
+									colorInfo.STREAMER_COLOR_1,
+									colorInfo.STREAMER_COLOR_2,
+									colorInfo.STREAMER_COLOR_3,
+									colorInfo.STREAMER_COLOR_4)
+			count_streamer = 0
+			for rgb in STREAMER_COLOR_DICT:
+				chrmgr.RegisterStreamerColor(count_streamer, rgb[0], rgb[1], rgb[2])
+				count_streamer += 1
 	def __RegisterEmotionIcon(self):
 		emotion.RegisterEmotionIcons()
 

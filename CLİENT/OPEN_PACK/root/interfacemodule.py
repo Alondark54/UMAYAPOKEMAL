@@ -117,7 +117,8 @@ if app.ENABLE_ACCE_COSTUME_SYSTEM:
 
 if app.ITEM_SHOP:
 	import uinesnemarket
-
+if app.ENABLE_STREAMER_SYSTEM:
+	import uistreamerlink
 IsQBHide = 0
 class Interface(object):
 	CHARACTER_STATUS_TAB = 1
@@ -185,7 +186,7 @@ class Interface(object):
 		luckyDrawButton.SetUpVisual("d:/ymir work/ui/lucky_draw/main_join.tga")
 		luckyDrawButton.SetOverVisual("d:/ymir work/ui/lucky_draw/main_join_over.tga")
 		luckyDrawButton.SetDownVisual("d:/ymir work/ui/lucky_draw/main_join_over.tga")
-		luckyDrawButton.SetPosition(systemSetting.GetWidth()-170, 20)
+		luckyDrawButton.SetPosition(systemSetting.GetWidth()-170, 10)#fýsatý yakala butonu ayarla
 		luckyDrawButton.SetEvent(ui.__mem_func__(self.LuckDrawOpen))
 		luckyDrawButton.Show()
 		self.luckyDrawButton = luckyDrawButton
@@ -231,6 +232,13 @@ class Interface(object):
 		wndUICurtain.SetColor(0x77000000)
 		wndUICurtain.Hide()
 		self.wndUICurtain = wndUICurtain
+
+
+	if app.ENABLE_STREAMER_SYSTEM:
+		def __MakeStreamerLink(self):
+			self.wndStreamerLink = uistreamerlink.LinkWindow()
+			self.wndStreamerLink.LoadWindow()
+			self.wndStreamerLink.Hide()
 
 	def __MakeMessengerWindow(self):
 		self.wndMessenger = uiMessenger.MessengerWindow()
@@ -596,7 +604,8 @@ class Interface(object):
 		self.__MakeTipBoard()
 		self.__MakeWebWindow()
 		self.__MakeCubeWindow()
-		
+		if app.ENABLE_STREAMER_SYSTEM:
+			self.__MakeStreamerLink()
 		if app.ENABLE_CUBE_RENEWAL_WORLDARD:
 			self.__MakeCubeRenewal()
 
@@ -788,6 +797,11 @@ class Interface(object):
 
 		#if self.wndEnergyBar:
 		#	self.wndEnergyBar.Destroy()
+
+		if app.ENABLE_STREAMER_SYSTEM:
+			if self.wndStreamerLink:
+				self.wndStreamerLink.Destroy()
+
 
 		if self.wndCharacter:
 			self.wndCharacter.Destroy()
@@ -1055,6 +1069,8 @@ class Interface(object):
 			del self.wndSalesButton
 		if app.ENABLE_NEW_BIOLOG:
 			del self.wndBioWindow
+		if app.ENABLE_STREAMER_SYSTEM:
+			del self.wndStreamerLink
 		del self.wndCubeResult
 		del self.privateShopBuilder
 		del self.inputDialog
@@ -1279,6 +1295,10 @@ class Interface(object):
 
 		def BINARY_ChangeOfflineShopName(self, shopName):
 			if selfs.wndOfflineShopManager: selfs.wndOfflineShopManager.ChangeOfflineShopName(shopName)
+
+	if app.ENABLE_STREAMER_SYSTEM:
+		def StreamerLinkShow(self, arg1, arg2, arg3):
+			self.wndStreamerLink.Open(arg1, arg2, arg3)
 
 	## Quest
 	def OpenCharacterWindowQuestPage(self):

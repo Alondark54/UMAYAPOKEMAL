@@ -119,9 +119,33 @@ class SystemDialog(ui.ScriptWindow):
 			net.LogOutGame()
 
 
+	# def __ClickExitButton(self):
+		# self.Close()
+		# net.ExitApplication()
+
+
 	def __ClickExitButton(self):
 		self.Close()
-		net.ExitApplication()
+		import uiCommon
+		questionDialog = uiCommon.QuestionDialog()
+		questionDialog.SetText("Oyunu kapatmak istiyor musun?")
+		questionDialog.SetAcceptEvent(ui.__mem_func__(self.Yes))
+		questionDialog.SetCancelEvent(ui.__mem_func__(self.Hayir))
+		questionDialog.Open()
+		self.questionDialog = questionDialog
+
+	def Yes(self):
+		import player
+		if player.IsPVPInstance():
+			import chat
+			chat.AppendChat(chat.CHAT_TYPE_INFO, "Duello'da iken oyunu kapatamassiniz.")
+		else:
+			import app
+			app.Exit()
+
+	def Hayir(self):
+		self.Close()
+		self.questionDialog.Close()
 
 	def __ClickSystemOptionButton(self):
 		self.Close()

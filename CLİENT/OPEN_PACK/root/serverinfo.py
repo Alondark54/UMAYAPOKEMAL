@@ -3,8 +3,8 @@ app.ServerName = None
 
 SRV1 = {
 	"name":"Umay2Games", #GOLD
-	# "host":"192.168.1.161",
-	"host":"45.144.213.131",
+	"host":"192.168.1.161",
+	# "host":"45.144.213.131",
 	"auth1":30001,
 	"ch1":30003,
 	"ch2":30011,

@@ -450,7 +450,7 @@ class MiniMap(ui.ScriptWindow):
 		minibuton4.SetOverVisual("Sosyal/btn_timer_hover.tga")
 		minibuton4.SetDownVisual("Sosyal/btn_timer_down.tga")
 		minibuton4.SetToolTipText("Hýzlý Sil Sat")
-		minibuton4.SetPosition(systemSetting.GetWidth() - 136+23, 90)
+		minibuton4.SetPosition(systemSetting.GetWidth() - 134, 94)
 		minibuton4.SetEvent(ui.__mem_func__(self.__ClickOtoDelete))
 		self.minibuton4 = minibuton4
 		self.minibuton4.Show()
